@@ -564,6 +564,32 @@
         font-size: 12px;
         color: #666;
     }
+    
+    .backup-section {
+        margin-top: 24px;
+        padding: 16px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+    
+    .backup-btn {
+        padding: 10px 20px;
+        background: #E1DEE3;
+        color: #333745;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    
+    .backup-btn:active {
+        opacity: 0.7;
+    }
 </style>
 ```
 
@@ -600,6 +626,13 @@
 </div>
 
 <div class="calendar" id="calendar"></div>
+
+<!-- Backup Section -->
+<div class="backup-section">
+    <button class="backup-btn" onclick="exportData()">💾 Export Data</button>
+    <button class="backup-btn" onclick="document.getElementById('importFile').click()">📥 Import Data</button>
+    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+</div>
 
 <!-- Plan Week Modal -->
 <div class="modal" id="planModal">
@@ -1455,6 +1488,67 @@
     
     function closeAnalytics() {
         document.getElementById('analyticsModal').classList.remove('active');
+    }
+    
+    function exportData() {
+        const workouts = loadWorkouts();
+        const plans = loadPlans();
+        const data = {
+            workouts: workouts,
+            plans: plans,
+            exportDate: new Date().toISOString(),
+            version: '1.0'
+        };
+        
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'fitness-tracker-backup-' + new Date().toISOString().split('T')[0] + '.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        alert('Backup exported! Save this file somewhere safe.');
+    }
+    
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                
+                if (!data.workouts || !data.plans) {
+                    alert('Invalid backup file format.');
+                    return;
+                }
+                
+                const confirmMsg = 'This will replace all current data with the backup. Continue?';
+                if (!confirm(confirmMsg)) {
+                    event.target.value = ''; // Reset file input
+                    return;
+                }
+                
+                saveWorkouts(data.workouts);
+                savePlans(data.plans);
+                
+                alert('Data restored successfully!');
+                renderCalendar();
+                
+                event.target.value = ''; // Reset file input
+            } catch (error) {
+                alert('Error reading backup file. Please make sure it\'s a valid backup.');
+                event.target.value = ''; // Reset file input
+            }
+        };
+        
+        reader.readAsText(file);
     }
     
     // Initialize
