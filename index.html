@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, Helvetica, sans-serif;
+        }
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, Helvetica, sans-serif;
+        background: #E1DEE3;
+        padding: 16px;
+        padding-bottom: 80px;
+    }
+    
+    .header {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .header h1 {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+    
+    .week-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+    }
+    
+    .week-nav button {
+        padding: 8px 16px;
+        background: #30BCED;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .week-label {
+        font-weight: 600;
+        font-size: 16px;
+    }
+    
+    .plan-week-btn {
+        margin-top: 12px;
+        width: 100%;
+        padding: 12px;
+        background: #79B473;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    
+    .stats {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .stats h2 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+    
+    .stat-value.green { color: #79B473; }
+    .stat-value.yellow { color: #FFD60A; }
+    .stat-value.red { color: #FC5130; }
+    
+    .stat-label {
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .calendar {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .day-card {
+        background: white;
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border-left: 4px solid #ddd;
+    }
+    
+    .day-card.completed {
+        border-left-color: #79B473;
+        background: #f0fdf4;
+    }
+    
+    .day-card.partial {
+        border-left-color: #FFD60A;
+        background: #fffbeb;
+    }
+    
+    .day-card.skipped {
+        border-left-color: #FC5130;
+        background: #fef2f2;
+    }
+    
+    .day-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+    
+    .day-info {
+        flex: 1;
+    }
+    
+    .day-name {
+        font-weight: 600;
+        font-size: 16px;
+    }
+    
+    .day-date {
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .planned-workout {
+        color: #30BCED;
+        font-size: 13px;
+        margin-top: 4px;
+        font-style: italic;
+    }
+    
+    .day-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .log-btn {
+        background: #30BCED;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+    
+    .workouts-list {
+        margin-top: 8px;
+    }
+    
+    .workout-item {
+        background: white;
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 8px;
+        border: 1px solid #e5e5e5;
+    }
+    
+    .workout-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 6px;
+    }
+    
+    .workout-type {
+        font-weight: 600;
+        font-size: 15px;
+    }
+    
+    .workout-details {
+        color: #666;
+        font-size: 13px;
+        margin-top: 8px;
+        line-height: 1.6;
+    }
+    
+    .workout-actions {
+        display: flex;
+        gap: 6px;
+    }
+    
+    .edit-btn {
+        background: #30BCED;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    
+    .delete-btn {
+        background: #FC5130;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    
+    .exercise-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+    }
+    
+    .exercise-check input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .exercise-check.completed {
+        opacity: 0.6;
+        text-decoration: line-through;
+    }
+    
+    .no-workouts {
+        color: #999;
+        font-size: 14px;
+        font-style: italic;
+        text-align: center;
+        padding: 12px;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        padding: 16px;
+        overflow-y: auto;
+    }
+    
+    .modal.active {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 20px;
+    }
+    
+    .modal-content {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 500px;
+        margin-bottom: 40px;
+    }
+    
+    .modal-header {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    
+    .workout-type-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .workout-type-btn {
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        font-size: 13px;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .workout-type-btn.active {
+        border-color: #30BCED;
+        background: #30BCED;
+        color: white;
+    }
+    
+    .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+    
+    .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    .component-checklist {
+        background: #f8f8f8;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+    
+    .component-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .component-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .component-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .component-item label {
+        flex: 1;
+        font-size: 15px;
+    }
+    
+    .exercise-list {
+        margin-bottom: 16px;
+    }
+    
+    .exercise-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #f8f8f8;
+        border-radius: 8px;
+    }
+    
+    .exercise-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+    }
+    
+    .exercise-name {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .exercise-item input[type="text"] {
+        width: 120px;
+        padding: 6px 8px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+    
+    .warmup-cooldown {
+        background: #f0f9ff;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #666;
+        white-space: pre-line;
+    }
+    
+    .status-selector {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+    
+    .status-btn {
+        flex: 1;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .status-btn.active {
+        border-color: #30BCED;
+        background: #30BCED;
+        color: white;
+    }
+    
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+    }
+    
+    .modal-actions button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    
+    .btn-cancel {
+        background: #E1DEE3;
+        color: #333745;
+    }
+    
+    .btn-save {
+        background: #30BCED;
+        color: white;
+    }
+    
+    .plan-grid {
+        display: grid;
+        gap: 12px;
+    }
+    
+    .plan-day {
+        background: #f8f8f8;
+        padding: 12px;
+        border-radius: 8px;
+    }
+    
+    .plan-day-name {
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .plan-day select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+    
+    .analytics-section {
+        background: #f8f8f8;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+    
+    .analytics-section h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+        color: #333;
+    }
+    
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .stat-row:last-child {
+        border-bottom: none;
+    }
+    
+    .stat-label-analytics {
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .stat-value-analytics {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .improvement-positive {
+        color: #34C759;
+    }
+    
+    .improvement-negative {
+        color: #FF3B30;
+    }
+    
+    .exercise-progress {
+        margin-top: 8px;
+    }
+    
+    .exercise-progress-item {
+        background: white;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .exercise-name-analytics {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+    
+    .progress-bar {
+        height: 6px;
+        background: #e0e0e0;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 4px;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: #30BCED;
+        transition: width 0.3s;
+    }
+    
+    .progress-text {
+        font-size: 12px;
+        color: #666;
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="header">
+        <h1>Fitness Tracker</h1>
+        <div class="week-nav">
+            <button onclick="changeWeek(-1)">← Prev</button>
+            <span class="week-label" id="weekLabel"></span>
+            <button onclick="changeWeek(1)">Next →</button>
+        </div>
+        <button class="plan-week-btn" onclick="openPlanModal()">📅 Plan This Week</button>
+        <button class="plan-week-btn" onclick="openAnalytics()" style="background: #333745; margin-top: 8px;">📊 View Analytics</button>
+    </div>
+
+```
+<div class="stats" id="stats">
+    <h2>This Week</h2>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-value green" id="completedCount">0</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value yellow" id="partialCount">0</div>
+            <div class="stat-label">Partial</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value red" id="skippedCount">0</div>
+            <div class="stat-label">Skipped</div>
+        </div>
+    </div>
+</div>
+
+<div class="calendar" id="calendar"></div>
+
+<!-- Plan Week Modal -->
+<div class="modal" id="planModal">
+    <div class="modal-content">
+        <div class="modal-header">Plan Your Week</div>
+        <div class="plan-grid" id="planGrid"></div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closePlanModal()">Cancel</button>
+            <button class="btn-save" onclick="savePlan()">Save Plan</button>
+        </div>
+    </div>
+</div>
+
+<!-- Log Workout Modal -->
+<div class="modal" id="workoutModal">
+    <div class="modal-content">
+        <div class="modal-header" id="modalTitle">Log Workout</div>
+        
+        <div class="form-group">
+            <label>Workout Type</label>
+            <div class="workout-type-grid" id="workoutTypeGrid"></div>
+        </div>
+        
+        <div class="form-group">
+            <label>Status</label>
+            <div class="status-selector">
+                <button class="status-btn active" data-status="completed" onclick="selectStatus('completed')">Completed</button>
+                <button class="status-btn" data-status="partial" onclick="selectStatus('partial')">Partial</button>
+                <button class="status-btn" data-status="skipped" onclick="selectStatus('skipped')">Skipped</button>
+            </div>
+        </div>
+        
+        <div id="workoutFields"></div>
+        
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-save" onclick="saveWorkout()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Analytics Modal -->
+<div class="modal" id="analyticsModal">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">📊 Your Progress</div>
+        <div id="analyticsContent"></div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeAnalytics()" style="flex: 1;">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const WORKOUT_TYPES = [
+        'Tennis',
+        'Lower Body Strength',
+        'Active Recovery',
+        'Glutes',
+        'Upper Body Strength',
+        'Rest',
+        'Cardio + Core'
+    ];
+    
+    const WORKOUT_CONFIGS = {
+        'Tennis': {
+            components: ['Tennis Clinic', 'Tennis Match']
+        },
+        'Lower Body Strength': {
+            components: ['10 min incline walk', '10 min Stairmaster'],
+            exercises: [
+                'Leg Press',
+                'Leg Curl',
+                'Leg Extension',
+                'Hip Abduction',
+                'Calf Raise',
+                'Squats'
+            ]
+        },
+        'Active Recovery': {
+            components: ['AM Walk', 'YouTube Yoga']
+        },
+        'Glutes': {
+            components: [
+                '10 min incline walk',
+                'Glute step back',
+                'Defensive slide with band',
+                'Hip thrust',
+                'Glute kickback with band',
+                '10 min Stairmaster'
+            ]
+        },
+        'Upper Body Strength': {
+            components: ['15 min incline walk'],
+            exercises: [
+                'Chest Press',
+                'Seated Row',
+                'Lat Pulldown',
+                'Shoulder Press',
+                'Bicep Curl',
+                'Tricep Pushdown'
+            ]
+        },
+        'Rest': {
+            components: ['Optional Hot Girl Walk']
+        },
+        'Cardio + Core': {
+            components: [
+                '30 min Intervals Run/Walk',
+                'Reverse Crunch + Pulse (45s)',
+                'Slow Bicycle Crunch (45s)',
+                'Toe Reaches (45s)',
+                'Standing Oblique Crunch (45s)',
+                'Russian Twists (45s)'
+            ]
+        }
+    };
+    
+    let currentWeekOffset = 0;
+    let currentDate = null;
+    let selectedStatus = 'completed';
+    let selectedWorkoutType = null;
+    let editingWorkoutIndex = null;
+    let formDataCache = {}; // Cache form data when switching status
+    
+    function getWeekDates(offset = 0) {
+        const now = new Date();
+        now.setDate(now.getDate() + (offset * 7));
+        
+        const monday = new Date(now);
+        const day = monday.getDay();
+        const diff = monday.getDate() - day + (day === 0 ? -6 : 1);
+        monday.setDate(diff);
+        monday.setHours(0, 0, 0, 0);
+        
+        const dates = [];
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(monday);
+            date.setDate(monday.getDate() + i);
+            dates.push(date);
+        }
+        
+        return dates;
+    }
+    
+    function getWeekKey(offset = 0) {
+        const dates = getWeekDates(offset);
+        return formatDate(dates[0]);
+    }
+    
+    function formatDate(date) {
+        return date.toISOString().split('T')[0];
+    }
+    
+    function formatDisplayDate(date) {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    
+    function getDayName(date) {
+        return date.toLocaleDateString('en-US', { weekday: 'long' });
+    }
+    
+    function loadWorkouts() {
+        const stored = localStorage.getItem('fitnessWorkouts');
+        return stored ? JSON.parse(stored) : {};
+    }
+    
+    function saveWorkouts(workouts) {
+        localStorage.setItem('fitnessWorkouts', JSON.stringify(workouts));
+    }
+    
+    function loadPlans() {
+        const stored = localStorage.getItem('fitnessPlans');
+        return stored ? JSON.parse(stored) : {};
+    }
+    
+    function savePlans(plans) {
+        localStorage.setItem('fitnessPlans', JSON.stringify(plans));
+    }
+    
+    function getPlannedWorkout(dateStr) {
+        const plans = loadPlans();
+        const weekKey = getWeekKey(currentWeekOffset);
+        const weekPlan = plans[weekKey];
+        if (!weekPlan) return null;
+        return weekPlan[dateStr];
+    }
+    
+    function getDayStatus(dateStr) {
+        const workouts = loadWorkouts();
+        const dayWorkouts = workouts[dateStr] || [];
+        
+        if (dayWorkouts.length === 0) return null;
+        
+        const hasSkipped = dayWorkouts.some(w => w.status === 'skipped');
+        const hasCompleted = dayWorkouts.some(w => w.status === 'completed');
+        const hasPartial = dayWorkouts.some(w => w.status === 'partial');
+        
+        if (hasSkipped && !hasCompleted && !hasPartial) return 'skipped';
+        if (hasCompleted) return 'completed';
+        if (hasPartial) return 'partial';
+        
+        return null;
+    }
+    
+    function renderWorkoutSummary(workout) {
+        if (workout.status === 'skipped') {
+            return workout.notes || 'Skipped';
+        }
+        
+        const config = WORKOUT_CONFIGS[workout.type];
+        let summary = [];
+        
+        if (config.components) {
+            const completed = (workout.components && workout.components.filter(c => c.completed).map(c => c.name)) || [];
+            if (completed.length > 0) {
+                summary.push('✓ ' + completed.join(', '));
+            }
+        }
+        
+        if (config.exercises) {
+            const completedEx = (workout.exercises && workout.exercises.filter(e => e.completed)) || [];
+            if (completedEx.length > 0) {
+                summary.push(completedEx.length + '/' + config.exercises.length + ' exercises');
+                const withWeights = completedEx.filter(e => e.weight).map(e => e.name + ': ' + e.weight);
+                if (withWeights.length > 0) {
+                    summary.push(withWeights.join(', '));
+                }
+            }
+        }
+        
+        if (workout.notes) {
+            summary.push(workout.notes);
+        }
+        
+        return summary.length > 0 ? summary.join(' • ') : 'Logged';
+    }
+    
+    function renderCalendar() {
+        const calendar = document.getElementById('calendar');
+        const dates = getWeekDates(currentWeekOffset);
+        const workouts = loadWorkouts();
+        
+        const startDate = dates[0];
+        const endDate = dates[6];
+        document.getElementById('weekLabel').textContent = 
+            `${formatDisplayDate(startDate)} - ${formatDisplayDate(endDate)}`;
+        
+        calendar.innerHTML = '';
+        
+        dates.forEach(date => {
+            const dateStr = formatDate(date);
+            const dayWorkouts = workouts[dateStr] || [];
+            const status = getDayStatus(dateStr);
+            const plannedWorkout = getPlannedWorkout(dateStr);
+            
+            const card = document.createElement('div');
+            card.className = `day-card ${status || ''}`;
+            
+            const header = document.createElement('div');
+            header.className = 'day-header';
+            
+            const dayInfo = document.createElement('div');
+            dayInfo.className = 'day-info';
+            dayInfo.innerHTML = `
+                <div class="day-name">${getDayName(date)}</div>
+                <div class="day-date">${formatDisplayDate(date)}</div>
+                ${plannedWorkout ? `<div class="planned-workout">📋 ${plannedWorkout}</div>` : ''}
+            `;
+            
+            const actions = document.createElement('div');
+            actions.className = 'day-actions';
+            actions.innerHTML = `
+                <button class="log-btn" onclick="openModal('${dateStr}')">+ Log</button>
+            `;
+            
+            header.appendChild(dayInfo);
+            header.appendChild(actions);
+            card.appendChild(header);
+            
+            if (dayWorkouts.length > 0) {
+                const workoutsList = document.createElement('div');
+                workoutsList.className = 'workouts-list';
+                
+                dayWorkouts.forEach((workout, index) => {
+                    const workoutDiv = document.createElement('div');
+                    workoutDiv.className = 'workout-item';
+                    
+                    const summary = renderWorkoutSummary(workout);
+                    
+                    workoutDiv.innerHTML = `
+                        <div class="workout-header">
+                            <div>
+                                <div class="workout-type">${workout.type}${workout.status === 'partial' ? ' (Partial)' : ''}</div>
+                            </div>
+                            <div class="workout-actions">
+                                <button class="edit-btn" onclick="editWorkout('${dateStr}', ${index})">Edit</button>
+                                <button class="delete-btn" onclick="deleteWorkout('${dateStr}', ${index})">Delete</button>
+                            </div>
+                        </div>
+                        <div class="workout-details">${summary}</div>
+                    `;
+                    
+                    workoutsList.appendChild(workoutDiv);
+                });
+                
+                card.appendChild(workoutsList);
+            } else {
+                const noWorkouts = document.createElement('div');
+                noWorkouts.className = 'no-workouts';
+                noWorkouts.textContent = plannedWorkout ? `Planned: ${plannedWorkout}` : 'No workout planned';
+                card.appendChild(noWorkouts);
+            }
+            
+            calendar.appendChild(card);
+        });
+        
+        updateStats(dates);
+    }
+    
+    function updateStats(dates) {
+        const workouts = loadWorkouts();
+        let completed = 0, partial = 0, skipped = 0;
+        
+        dates.forEach(date => {
+            const status = getDayStatus(formatDate(date));
+            if (status === 'completed') completed++;
+            else if (status === 'partial') partial++;
+            else if (status === 'skipped') skipped++;
+        });
+        
+        document.getElementById('completedCount').textContent = completed;
+        document.getElementById('partialCount').textContent = partial;
+        document.getElementById('skippedCount').textContent = skipped;
+    }
+    
+    function openPlanModal() {
+        const dates = getWeekDates(currentWeekOffset);
+        const plans = loadPlans();
+        const weekKey = getWeekKey(currentWeekOffset);
+        const weekPlan = plans[weekKey] || {};
+        
+        // Get all workout types already selected this week
+        const selectedTypes = new Set(Object.values(weekPlan).filter(v => v));
+        
+        const grid = document.getElementById('planGrid');
+        grid.innerHTML = '';
+        
+        dates.forEach(date => {
+            const dateStr = formatDate(date);
+            const div = document.createElement('div');
+            div.className = 'plan-day';
+            
+            const currentPlan = weekPlan[dateStr] || '';
+            
+            div.innerHTML = `
+                <div class="plan-day-name">${getDayName(date)} (${formatDisplayDate(date)})</div>
+                <select data-date="${dateStr}">
+                    <option value="">No workout planned</option>
+                    ${WORKOUT_TYPES.map(type => {
+                        const isSelected = currentPlan === type;
+                        const isUsedElsewhere = selectedTypes.has(type) && !isSelected;
+                        return `<option value="${type}" 
+                            ${isSelected ? 'selected' : ''} 
+                            ${isUsedElsewhere ? 'style="color: #999; font-style: italic;"' : ''}>
+                            ${type}${isUsedElsewhere ? ' ✓' : ''}
+                        </option>`;
+                    }).join('')}
+                </select>
+            `;
+            
+            grid.appendChild(div);
+        });
+        
+        document.getElementById('planModal').classList.add('active');
+    }
+    
+    function closePlanModal() {
+        document.getElementById('planModal').classList.remove('active');
+    }
+    
+    function savePlan() {
+        const plans = loadPlans();
+        const weekKey = getWeekKey(currentWeekOffset);
+        const weekPlan = {};
+        
+        document.querySelectorAll('#planGrid select').forEach(select => {
+            const date = select.dataset.date;
+            const value = select.value;
+            if (value) {
+                weekPlan[date] = value;
+            }
+        });
+        
+        plans[weekKey] = weekPlan;
+        savePlans(plans);
+        closePlanModal();
+        renderCalendar();
+    }
+    
+    function openModal(dateStr, editIndex = null) {
+        currentDate = dateStr;
+        editingWorkoutIndex = editIndex;
+        
+        if (editIndex !== null) {
+            document.getElementById('modalTitle').textContent = 'Edit Workout';
+            const workouts = loadWorkouts();
+            const workout = workouts[dateStr][editIndex];
+            
+            selectedWorkoutType = workout.type;
+            selectedStatus = workout.status;
+            
+            renderWorkoutTypeGrid();
+            selectWorkoutType(selectedWorkoutType);
+            selectStatus(selectedStatus);
+            
+            // Populate existing data
+            if (workout.status !== 'skipped') {
+                populateWorkoutData(workout);
+            }
+        } else {
+            document.getElementById('modalTitle').textContent = 'Log Workout';
+            const plannedWorkout = getPlannedWorkout(dateStr);
+            selectedWorkoutType = plannedWorkout || WORKOUT_TYPES[0];
+            selectedStatus = 'completed';
+            
+            renderWorkoutTypeGrid();
+            selectWorkoutType(selectedWorkoutType);
+            selectStatus('completed');
+        }
+        
+        document.getElementById('workoutModal').classList.add('active');
+    }
+    
+    function editWorkout(dateStr, index) {
+        openModal(dateStr, index);
+    }
+    
+    function populateWorkoutData(workout) {
+        const config = WORKOUT_CONFIGS[workout.type];
+        
+        if (config.components && workout.components) {
+            workout.components.forEach(function(comp, i) {
+                const checkbox = document.querySelector('input[name="component-' + i + '"]');
+                if (checkbox) checkbox.checked = comp.completed;
+            });
+        }
+        
+        if (config.exercises && workout.exercises) {
+            workout.exercises.forEach(function(ex, i) {
+                const checkbox = document.querySelector('input[name="exercise-' + i + '"]');
+                const input = document.querySelector('input[name="weight-' + i + '"]');
+                if (checkbox) checkbox.checked = ex.completed;
+                if (input) input.value = ex.weight || '';
+            });
+        }
+        
+        const notesField = document.getElementById('workoutNotes');
+        if (notesField) notesField.value = workout.notes || '';
+    }
+    
+    function getPreviousWeights(workoutType) {
+        const workouts = loadWorkouts();
+        const weights = {};
+        
+        // Get all dates sorted in reverse (most recent first)
+        const allDates = Object.keys(workouts).sort().reverse();
+        
+        // Find the most recent workout of this type (excluding current date if editing)
+        for (let i = 0; i < allDates.length; i++) {
+            const date = allDates[i];
+            
+            // Skip current date when logging new workout
+            if (date === currentDate && editingWorkoutIndex === null) {
+                continue;
+            }
+            
+            const dayWorkouts = workouts[date];
+            
+            for (let j = 0; j < dayWorkouts.length; j++) {
+                const workout = dayWorkouts[j];
+                
+                // Skip the workout we're currently editing
+                if (date === currentDate && editingWorkoutIndex === j) {
+                    continue;
+                }
+                
+                if (workout.type === workoutType && workout.exercises) {
+                    workout.exercises.forEach(function(ex) {
+                        // Only store if we haven't found this exercise yet (most recent)
+                        if (!weights[ex.name] && ex.weight) {
+                            weights[ex.name] = ex.weight;
+                        }
+                    });
+                }
+            }
+            
+            // If we found all exercises, we can stop searching
+            const config = WORKOUT_CONFIGS[workoutType];
+            if (config.exercises) {
+                const foundAll = config.exercises.every(function(exName) {
+                    return weights[exName];
+                });
+                if (foundAll) break;
+            }
+        }
+        
+        return weights;
+    }
+    
+    function renderWorkoutTypeGrid() {
+        const grid = document.getElementById('workoutTypeGrid');
+        grid.innerHTML = '';
+        
+        WORKOUT_TYPES.forEach(function(type) {
+            const btn = document.createElement('button');
+            btn.className = 'workout-type-btn';
+            btn.textContent = type;
+            btn.onclick = function() { selectWorkoutType(type); };
+            grid.appendChild(btn);
+        });
+    }
+    
+    function selectWorkoutType(type) {
+        selectedWorkoutType = type;
+        
+        document.querySelectorAll('.workout-type-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent === type) {
+                btn.classList.add('active');
+            }
+        });
+        
+        renderWorkoutFields();
+    }
+    
+    function renderWorkoutFields() {
+        const container = document.getElementById('workoutFields');
+        
+        if (selectedStatus === 'skipped') {
+            container.innerHTML = '<div class="form-group"><label>Notes (optional)</label><textarea id="workoutNotes" placeholder="Why did you skip?"></textarea></div>';
+            return;
+        }
+        
+        const config = WORKOUT_CONFIGS[selectedWorkoutType];
+        let html = '';
+        
+        if (config.warmup) {
+            html += '<div class="warmup-cooldown">' + config.warmup + '</div>';
+        }
+        
+        // Get previous weights for this workout type
+        const previousWeights = getPreviousWeights(selectedWorkoutType);
+        
+        if (config.components) {
+            html += '<div class="component-checklist">';
+            config.components.forEach(function(comp, i) {
+                html += '<div class="component-item">';
+                html += '<input type="checkbox" id="component-' + i + '" name="component-' + i + '">';
+                html += '<label for="component-' + i + '">' + comp + '</label>';
+                html += '</div>';
+            });
+            html += '</div>';
+        }
+        
+        if (config.exercises) {
+            html += '<div class="exercise-list">';
+            config.exercises.forEach(function(ex, i) {
+                const prevWeight = previousWeights[ex] || '';
+                html += '<div class="exercise-item">';
+                html += '<input type="checkbox" name="exercise-' + i + '">';
+                html += '<span class="exercise-name">' + ex + '</span>';
+                html += '<input type="text" name="weight-' + i + '" placeholder="e.g., 25lbs" value="' + prevWeight + '">';
+                html += '</div>';
+            });
+            html += '</div>';
+        }
+        
+        html += '<div class="form-group"><label>Notes (optional)</label><textarea id="workoutNotes" placeholder="How did it feel? Any PRs?"></textarea></div>';
+        
+        container.innerHTML = html;
+    }
+    
+    function closeModal() {
+        document.getElementById('workoutModal').classList.remove('active');
+        editingWorkoutIndex = null;
+        formDataCache = {}; // Clear cache when closing modal
+    }
+    
+    function saveFormDataToCache() {
+        formDataCache = {};
+        
+        // Save component checkboxes
+        document.querySelectorAll('input[name^="component-"]').forEach(input => {
+            formDataCache[input.name] = input.checked;
+        });
+        
+        // Save exercise checkboxes and weights
+        document.querySelectorAll('input[name^="exercise-"]').forEach(input => {
+            formDataCache[input.name] = input.checked;
+        });
+        
+        document.querySelectorAll('input[name^="weight-"]').forEach(input => {
+            formDataCache[input.name] = input.value;
+        });
+        
+        // Save notes
+        const notesField = document.getElementById('workoutNotes');
+        if (notesField) {
+            formDataCache['notes'] = notesField.value;
+        }
+    }
+    
+    function restoreFormDataFromCache() {
+        // Restore all cached form values
+        Object.keys(formDataCache).forEach(name => {
+            if (name === 'notes') {
+                const notesField = document.getElementById('workoutNotes');
+                if (notesField) {
+                    notesField.value = formDataCache[name];
+                }
+            } else {
+                const input = document.querySelector(`input[name="${name}"]`);
+                if (input) {
+                    if (input.type === 'checkbox') {
+                        input.checked = formDataCache[name];
+                    } else {
+                        input.value = formDataCache[name];
+                    }
+                }
+            }
+        });
+    }
+    
+    function selectStatus(status) {
+        // Save current form data before switching
+        saveFormDataToCache();
+        
+        selectedStatus = status;
+        
+        document.querySelectorAll('.status-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.status === status) {
+                btn.classList.add('active');
+            }
+        });
+        
+        renderWorkoutFields();
+        
+        // Restore form data after rendering
+        restoreFormDataFromCache();
+    }
+    
+    function saveWorkout() {
+        const workout = {
+            type: selectedWorkoutType,
+            status: selectedStatus,
+            timestamp: new Date().toISOString()
+        };
+        
+        if (selectedStatus !== 'skipped') {
+            const config = WORKOUT_CONFIGS[selectedWorkoutType];
+            
+            if (config.components) {
+                workout.components = config.components.map(function(comp, i) {
+                    return {
+                        name: comp,
+                        completed: (document.querySelector('input[name="component-' + i + '"]') && document.querySelector('input[name="component-' + i + '"]').checked) || false
+                    };
+                });
+            }
+            
+            if (config.exercises) {
+                workout.exercises = config.exercises.map(function(ex, i) {
+                    return {
+                        name: ex,
+                        completed: (document.querySelector('input[name="exercise-' + i + '"]') && document.querySelector('input[name="exercise-' + i + '"]').checked) || false,
+                        weight: (document.querySelector('input[name="weight-' + i + '"]') && document.querySelector('input[name="weight-' + i + '"]').value) || ''
+                    };
+                });
+            }
+            
+            workout.notes = (document.getElementById('workoutNotes') && document.getElementById('workoutNotes').value) || '';
+        } else {
+            workout.notes = (document.getElementById('workoutNotes') && document.getElementById('workoutNotes').value) || '';
+        }
+        
+        const workouts = loadWorkouts();
+        if (!workouts[currentDate]) {
+            workouts[currentDate] = [];
+        }
+        
+        if (editingWorkoutIndex !== null) {
+            workouts[currentDate][editingWorkoutIndex] = workout;
+        } else {
+            workouts[currentDate].push(workout);
+        }
+        
+        saveWorkouts(workouts);
+        closeModal();
+        renderCalendar();
+    }
+    
+    function deleteWorkout(dateStr, index) {
+        if (!confirm('Delete this workout?')) return;
+        
+        const workouts = loadWorkouts();
+        workouts[dateStr].splice(index, 1);
+        
+        if (workouts[dateStr].length === 0) {
+            delete workouts[dateStr];
+        }
+        
+        saveWorkouts(workouts);
+        renderCalendar();
+    }
+    
+    function changeWeek(offset) {
+        currentWeekOffset += offset;
+        renderCalendar();
+    }
+    
+    function openAnalytics() {
+        const workouts = loadWorkouts();
+        const content = document.getElementById('analyticsContent');
+        
+        // Calculate overall stats
+        const allDates = Object.keys(workouts).sort();
+        if (allDates.length === 0) {
+            content.innerHTML = '<div class="analytics-section"><p style="text-align: center; color: #999;">No workout data yet. Start logging workouts to see your progress!</p></div>';
+            document.getElementById('analyticsModal').classList.add('active');
+            return;
+        }
+        
+        const totalWorkouts = allDates.reduce(function(sum, date) {
+            return sum + workouts[date].length;
+        }, 0);
+        
+        const completedWorkouts = allDates.reduce(function(sum, date) {
+            return sum + workouts[date].filter(function(w) { return w.status === 'completed'; }).length;
+        }, 0);
+        
+        // Calculate consistency (last 4 weeks)
+        const fourWeeksAgo = new Date();
+        fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+        const recentDates = allDates.filter(function(date) {
+            return new Date(date) >= fourWeeksAgo;
+        });
+        
+        const weeksActive = Math.min(4, Math.ceil(recentDates.length / 7));
+        const avgPerWeek = weeksActive > 0 ? (recentDates.length / weeksActive).toFixed(1) : 0;
+        
+        // Calculate streak
+        let currentStreak = 0;
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        for (let i = 0; i < 30; i++) {
+            const checkDate = new Date(today);
+            checkDate.setDate(today.getDate() - i);
+            const dateStr = formatDate(checkDate);
+            
+            if (workouts[dateStr] && workouts[dateStr].some(function(w) { return w.status === 'completed'; })) {
+                currentStreak++;
+            } else if (i > 0) {
+                break;
+            }
+        }
+        
+        // Calculate exercise progress
+        const exerciseData = {};
+        
+        allDates.forEach(function(date) {
+            workouts[date].forEach(function(workout) {
+                if (workout.exercises) {
+                    workout.exercises.forEach(function(ex) {
+                        if (ex.completed && ex.weight) {
+                            if (!exerciseData[ex.name]) {
+                                exerciseData[ex.name] = [];
+                            }
+                            exerciseData[ex.name].push({
+                                date: date,
+                                weight: ex.weight
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Build HTML
+        let html = '';
+        
+        // Overall Stats
+        html += '<div class="analytics-section">';
+        html += '<h3>Overall Stats</h3>';
+        html += '<div class="stat-row"><span class="stat-label-analytics">Total Workouts</span><span class="stat-value-analytics">' + totalWorkouts + '</span></div>';
+        html += '<div class="stat-row"><span class="stat-label-analytics">Completed</span><span class="stat-value-analytics">' + completedWorkouts + '</span></div>';
+        html += '<div class="stat-row"><span class="stat-label-analytics">Current Streak</span><span class="stat-value-analytics">' + currentStreak + ' days</span></div>';
+        html += '<div class="stat-row"><span class="stat-label-analytics">Avg per Week (last 4 weeks)</span><span class="stat-value-analytics">' + avgPerWeek + '</span></div>';
+        html += '</div>';
+        
+        // Exercise Progress
+        const exerciseNames = Object.keys(exerciseData);
+        if (exerciseNames.length > 0) {
+            html += '<div class="analytics-section">';
+            html += '<h3>Exercise Progress</h3>';
+            html += '<div class="exercise-progress">';
+            
+            exerciseNames.forEach(function(exName) {
+                const records = exerciseData[exName];
+                if (records.length >= 2) {
+                    const first = records[0].weight;
+                    const latest = records[records.length - 1].weight;
+                    
+                    html += '<div class="exercise-progress-item">';
+                    html += '<div class="exercise-name-analytics">' + exName + '</div>';
+                    html += '<div class="progress-text">First: ' + first + ' → Latest: ' + latest + ' (' + records.length + ' sessions)</div>';
+                    html += '</div>';
+                }
+            });
+            
+            html += '</div></div>';
+        }
+        
+        // Weekly Breakdown
+        html += '<div class="analytics-section">';
+        html += '<h3>Last 4 Weeks</h3>';
+        
+        for (let week = 0; week < 4; week++) {
+            const weekStart = new Date();
+            weekStart.setDate(weekStart.getDate() - (week * 7) - weekStart.getDay() + 1);
+            weekStart.setHours(0, 0, 0, 0);
+            
+            let weekCount = 0;
+            for (let day = 0; day < 7; day++) {
+                const checkDate = new Date(weekStart);
+                checkDate.setDate(weekStart.getDate() + day);
+                const dateStr = formatDate(checkDate);
+                if (workouts[dateStr]) {
+                    weekCount += workouts[dateStr].filter(function(w) { return w.status === 'completed'; }).length;
+                }
+            }
+            
+            const weekLabel = week === 0 ? 'This week' : week + ' weeks ago';
+            html += '<div class="stat-row"><span class="stat-label-analytics">' + weekLabel + '</span><span class="stat-value-analytics">' + weekCount + ' workouts</span></div>';
+        }
+        
+        html += '</div>';
+        
+        content.innerHTML = html;
+        document.getElementById('analyticsModal').classList.add('active');
+    }
+    
+    function closeAnalytics() {
+        document.getElementById('analyticsModal').classList.remove('active');
+    }
+    
+    // Initialize
+    renderCalendar();
+</script>
+```
+
+</body>
+</html>
